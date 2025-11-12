@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Facial Emotion Detection</title>
+<style>
+body{font-family:Arial,sans-serif;background-color:#fafafa;display:flex;justify-content:center;align-items:center;height:100vh;margin:0;}
+.container{text-align:center;background:white;padding:30px;border-radius:12px;box-shadow:0 4px 10px rgba(0,0,0,0.1);width:400px;}
+input,button{margin:10px 0;width:100%;padding:10px;border:1px solid #ccc;border-radius:6px;}
+button{background-color:#4CAF50;color:white;border:none;cursor:pointer;}
+button:hover{background-color:#45a049;}
+img{margin-top:15px;max-width:100%;border-radius:10px;display:none;}
+.result{margin-top:20px;font-size:18px;color:#333;font-weight:bold;}
+small{display:block;color:#777;}
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>Emotion Detector</h1>
+    <form id="uploadForm">
+        <input type="text" name="name" placeholder="Enter your name" required>
+        <input type="email" name="email" placeholder="Enter your email" required>
+        <input type="file" id="imageInput" name="image" accept="image/*" required>
+        <button type="submit">Detect Emotion</button>
+    </form>
+    <img id="preview">
+    <div class="result" id="result"></div>
+    <small>Powered by AI — Made by Miss Somto 💚</small>
+</div>
+<script>
+const form=document.getElementById('uploadForm');
+const preview=document.getElementById('preview');
+const result=document.getElementById('result');
+const imageInput=document.getElementById('imageInput');
+imageInput.addEventListener('change',()=>{const f=imageInput.files[0];if(f){preview.src=URL.createObjectURL(f);preview.style.display='block';result.textContent="";}});
+form.addEventListener('submit',async(e)=>{e.preventDefault();result.textContent="Processing...";const fd=new FormData(form);try{const res=await fetch('/predict',{method:'POST',body:fd});const data=await res.json();result.textContent=data.error?"Error: "+data.error:`${data.message} (Detected: ${data.emotion})`;}catch(err){result.textContent="Server error.";}});
+</script>
+</body>
+</html>
